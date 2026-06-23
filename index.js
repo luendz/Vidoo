@@ -54,8 +54,31 @@ async function requireAuth(request, env) {
   return await verifyToken(token, env.AUTH_SECRET);
 }
 
+// Envía una notificación por correo vía la API de Resend.
+// No lanza error si falla — una notificación caída no debe romper la subida/borrado real.
+async function notify(env, { subject, message }) {
+  if (!env.RESEND_API_KEY || !env.NOTIFY_EMAIL) return;
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Vidoo <onboarding@resend.dev>",
+        to: [env.NOTIFY_EMAIL],
+        subject,
+        text: message,
+      }),
+    });
+  } catch (err) {
+    console.error("Error enviando notificación:", err);
+  }
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
 
@@ -103,6 +126,11 @@ export default {
         },
       });
 
+      ctx.waitUntil(notify(env, {
+        subject: "Vidoo · Nuevo video subido",
+        message: `Se subió un nuevo video a tu bóveda:\n\n${filename}\n\nFecha: ${new Date().toLocaleString("es")}`,
+      }));
+
       return json({ ok: true, key: safeKey });
     }
 
@@ -138,6 +166,12 @@ export default {
     if (path.startsWith("/api/video/") && request.method === "DELETE") {
       const key = decodeURIComponent(path.replace("/api/video/", ""));
       await env.VIDEO_BUCKET.delete(key);
+
+      ctx.waitUntil(notify(env, {
+        subject: "Vidoo · Video eliminado",
+        message: `Se eliminó un video de tu bóveda:\n\n${key}\n\nFecha: ${new Date().toLocaleString("es")}`,
+      }));
+
       return json({ ok: true });
     }
 
