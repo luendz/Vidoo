@@ -44,6 +44,11 @@ async function verifyToken(token, secret) {
 }
 
 async function requireAuth(request, env) {
+  const url = new URL(request.url);
+  const queryToken = url.searchParams.get("token");
+  if (queryToken) {
+    return await verifyToken(queryToken, env.AUTH_SECRET);
+  }
   const auth = request.headers.get("Authorization") || "";
   const token = auth.replace("Bearer ", "");
   return await verifyToken(token, env.AUTH_SECRET);
