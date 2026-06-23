@@ -1,5 +1,5 @@
-name = "video-vault-api"
-main = "src/index.js"
+name = "vidoocloud"
+main = "index.js"
 compatibility_date = "2025-01-01"
 
 # El bucket R2 donde se guardan los videos.
@@ -7,7 +7,7 @@ compatibility_date = "2025-01-01"
 # este binding lo conecta al Worker como env.VIDEO_BUCKET
 [[r2_buckets]]
 binding = "VIDEO_BUCKET"
-bucket_name = "video-vault"
+bucket_name = "video-cloud"
 
 # Los secretos (SITE_PASSWORD y AUTH_SECRET) NO van aquí.
 # Se configuran con:
