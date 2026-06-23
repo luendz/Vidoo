@@ -1,0 +1,15 @@
+name = "video-vault-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# El bucket R2 donde se guardan los videos.
+# Después de crear el bucket con `wrangler r2 bucket create video-vault`,
+# este binding lo conecta al Worker como env.VIDEO_BUCKET
+[[r2_buckets]]
+binding = "VIDEO_BUCKET"
+bucket_name = "video-vault"
+
+# Los secretos (SITE_PASSWORD y AUTH_SECRET) NO van aquí.
+# Se configuran con:
+#   wrangler secret put SITE_PASSWORD
+#   wrangler secret put AUTH_SECRET

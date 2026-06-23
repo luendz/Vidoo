@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bóveda — Video Vault</title>
+<style>
+  :root {
+    --bg: #15140f;
+    --bg-soft: #1d1b14;
+    --paper: #e8e2d0;
+    --amber: #d98e3f;
+    --amber-dim: #8a5d2c;
+    --red: #b8493a;
+    --line: #3a3626;
+    font-size: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'Courier New', ui-monospace, monospace;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(217,142,63,0.06), transparent 40%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, transparent 1px, transparent 2px);
+  }
+
+  .reel-font {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- LOGIN ---------- */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+
+  .sprocket-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .sprocket {
+    width: 10px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+
+  .login-box h1 {
+    font-size: 1.9rem;
+    margin: 0 0 6px;
+    color: var(--paper);
+  }
+  .login-box p {
+    color: var(--amber-dim);
+    font-size: 0.85rem;
+    margin: 0 0 32px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  input[type="password"], input[type="text"] {
+    width: 100%;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--paper);
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  input:focus {
+    border-color: var(--amber);
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    width: 100%;
+    margin-top: 14px;
+    background: var(--amber);
+    color: #1a1408;
+    font-weight: 700;
+    padding: 14px;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: filter 0.15s ease;
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-primary:active { filter: brightness(0.9); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #login-error {
+    color: var(--red);
+    font-size: 0.85rem;
+    margin-top: 14px;
+    min-height: 1.2em;
+  }
+
+  /* ---------- APP ---------- */
+  #app {
+    display: none;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 16px 100px;
+  }
+
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 22px;
+  }
+  header.top h1 {
+    font-size: 1.3rem;
+    margin: 0;
+  }
+  header.top .count {
+    font-size: 0.75rem;
+    color: var(--amber-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Drop zone */
+  #dropzone {
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    padding: 28px 16px;
+    text-align: center;
+    margin-bottom: 24px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  #dropzone.drag-over {
+    border-color: var(--amber);
+    background: rgba(217,142,63,0.06);
+  }
+  #dropzone p {
+    margin: 0 0 14px;
+    color: var(--amber-dim);
+    font-size: 0.85rem;
+  }
+  #file-input { display: none; }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--amber-dim);
+    color: var(--amber);
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .btn-secondary:hover { border-color: var(--amber); }
+
+  /* Upload progress list */
+  .upload-item {
+    background: var(--bg-soft);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+  }
+  .upload-item .fname {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--paper);
+    word-break: break-all;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--amber);
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+  .upload-item.done .progress-fill { background: #6a9c5e; }
+  .upload-item.error .progress-fill { background: var(--red); }
+
+  /* Gallery */
+  #gallery {
+    display: grid;
+    gap: 14px;
+  }
+
+  .video-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .video-card .thumb-wrap {
+    position: relative;
+    cursor: pointer;
+    background: #000;
+  }
+  .video-card .thumb-wrap video {
+    width: 100%;
+    display: block;
+    max-height: 60vh;
+    pointer-events: none; /* el click lo maneja el wrapper, no el <video> nativo */
+  }
+  .play-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(217,142,63,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .play-badge::after {
+    content: "";
+    border-style: solid;
+    border-width: 9px 0 9px 15px;
+    border-color: transparent transparent transparent #1a1408;
+    margin-left: 3px;
+  }
+  .thumb-wrap:hover .play-badge { transform: translate(-50%, -50%) scale(1.08); }
+
+  .video-card .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    color: var(--amber-dim);
+  }
+  .video-card .meta .del {
+    color: var(--red);
+    background: none;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 4px 8px;
+  }
+  .video-card .meta .del:hover { color: #e07060; }
+
+  /* ---------- MODAL PLAYER ---------- */
+  #player-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,7,4,0.96);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  #player-modal.open {
+    display: flex;
+  }
+  .player-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #player-modal video {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    background: #000;
+  }
+  .player-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: var(--paper);
+    font-size: 1.3rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  .player-close:hover { background: rgba(255,255,255,0.16); }
+
+  .speed-control {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+  }
+  .speed-btn {
+    background: rgba(255,255,255,0.08);
+    color: var(--amber-dim);
+    font-size: 0.72rem;
+    padding: 6px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .speed-btn.active {
+    background: var(--amber);
+    color: #1a1408;
+    font-weight: 700;
+  }
+  .speed-btn:hover:not(.active) { color: var(--paper); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--amber-dim);
+    font-size: 0.85rem;
+  }
+  .empty-state .reel-font {
+    font-size: 1.1rem;
+    color: var(--paper);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="sprocket-row">
+        <div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div>
+        <div class="sprocket"></div><div class="sprocket"></div>
+      </div>
+      <h1 class="reel-font">Bóveda</h1>
+      <p>Acceso privado · solo cintas autorizadas</p>
+      <input type="password" id="password-input" placeholder="Contraseña" autocomplete="current-password">
+      <button class="btn-primary" id="login-btn">Entrar</button>
+      <div id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <header class="top">
+      <h1 class="reel-font">Bóveda</h1>
+      <span class="count" id="video-count">0 cintas</span>
+    </header>
+
+    <div id="dropzone">
+      <p>Arrastra un video aquí, o súbelo desde tu celular</p>
+      <button class="btn-secondary" id="pick-btn">Elegir archivo</button>
+      <input type="file" id="file-input" accept="video/*" multiple>
+    </div>
+
+    <div id="uploads"></div>
+    <div id="gallery"></div>
+  </div>
+
+  <!-- MODAL PLAYER -->
+  <div id="player-modal">
+    <div class="player-inner">
+      <button class="player-close" id="player-close" aria-label="Cerrar">✕</button>
+      <video id="modal-video" controls playsinline></video>
+      <div class="speed-control" id="speed-control">
+        <button class="speed-btn" data-speed="0.5">0.5x</button>
+        <button class="speed-btn active" data-speed="1">1x</button>
+        <button class="speed-btn" data-speed="1.5">1.5x</button>
+        <button class="speed-btn" data-speed="2">2x</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ⚠️ Reemplaza esto con la URL de tu Worker después de desplegarlo.
+  const API_BASE = "https://video-vault-api.TU-SUBDOMINIO.workers.dev";
+
+  const $ = (sel) => document.querySelector(sel);
+  let token = localStorage.getItem("vv_token") || null;
+
+  // ---------- LOGIN ----------
+  $("#login-btn").addEventListener("click", login);
+  $("#password-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") login();
+  });
+
+  async function login() {
+    const password = $("#password-input").value;
+    const btn = $("#login-btn");
+    btn.disabled = true;
+    $("#login-error").textContent = "";
+    try {
+      const res = await fetch(`${API_BASE}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al entrar");
+      token = data.token;
+      localStorage.setItem("vv_token", token);
+      showApp();
+    } catch (err) {
+      $("#login-error").textContent = err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function showApp() {
+    $("#login-screen").style.display = "none";
+    $("#app").style.display = "block";
+    loadVideos();
+  }
+
+  // ---------- UPLOAD ----------
+  const dropzone = $("#dropzone");
+  const fileInput = $("#file-input");
+
+  $("#pick-btn").addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", (e) => handleFiles(e.target.files));
+
+  ["dragover", "dragenter"].forEach(evt =>
+    dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add("drag-over"); })
+  );
+  ["dragleave", "drop"].forEach(evt =>
+    dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove("drag-over"); })
+  );
+  dropzone.addEventListener("drop", (e) => {
+    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+  });
+
+  function handleFiles(files) {
+    [...files].forEach(uploadFile);
+  }
+
+  function uploadFile(file) {
+    const id = "u" + Date.now() + Math.random().toString(36).slice(2);
+    const item = document.createElement("div");
+    item.className = "upload-item";
+    item.id = id;
+    item.innerHTML = `
+      <div class="fname"><span>${escapeHtml(file.name)}</span><span class="pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+    `;
+    $("#uploads").prepend(item);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${API_BASE}/api/upload`);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("X-Filename", file.name);
+    xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
+
+    xhr.upload.onprogress = (e) => {
+      const pct = Math.round((e.loaded / e.total) * 100);
+      item.querySelector(".pct").textContent = `${pct}%`;
+      item.querySelector(".progress-fill").style.width = `${pct}%`;
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        item.classList.add("done");
+        item.querySelector(".pct").textContent = "Listo";
+        setTimeout(() => { item.remove(); loadVideos(); }, 1200);
+      } else {
+        item.classList.add("error");
+        item.querySelector(".pct").textContent = "Error";
+      }
+    };
+    xhr.onerror = () => {
+      item.classList.add("error");
+      item.querySelector(".pct").textContent = "Error de red";
+    };
+
+    xhr.send(file);
+  }
+
+  // ---------- GALLERY ----------
+  async function loadVideos() {
+    try {
+      const res = await fetch(`${API_BASE}/api/videos`, {
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+      if (res.status === 401) return logout();
+      const { videos } = await res.json();
+      renderGallery(videos);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function renderGallery(videos) {
+    const gallery = $("#gallery");
+    $("#video-count").textContent = `${videos.length} ${videos.length === 1 ? "cinta" : "cintas"}`;
+
+    if (videos.length === 0) {
+      gallery.innerHTML = `
+        <div class="empty-state">
+          <span class="reel-font">Vacío por ahora</span>
+          Sube tu primer video desde arriba.
+        </div>`;
+      return;
+    }
+
+    gallery.innerHTML = videos.map(v => `
+      <div class="video-card">
+        <div class="thumb-wrap" data-key="${escapeHtml(v.key)}">
+          <video preload="metadata" src="${API_BASE}/api/video/${encodeURIComponent(v.key)}#t=0.1" muted></video>
+          <div class="play-badge"></div>
+        </div>
+        <div class="meta">
+          <span>${formatSize(v.size)} · ${formatDate(v.uploaded)}</span>
+          <button class="del" data-key="${escapeHtml(v.key)}">Borrar</button>
+        </div>
+      </div>
+    `).join("");
+
+    gallery.querySelectorAll(".thumb-wrap").forEach(el => {
+      el.addEventListener("click", () => openPlayer(el.dataset.key));
+    });
+    gallery.querySelectorAll(".del").forEach(btn => {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); deleteVideo(btn.dataset.key); });
+    });
+  }
+
+  // ---------- MODAL PLAYER ----------
+  const playerModal = $("#player-modal");
+  const modalVideo = $("#modal-video");
+
+  function openPlayer(key) {
+    modalVideo.src = `${API_BASE}/api/video/${encodeURIComponent(key)}`;
+    playerModal.classList.add("open");
+    document.body.style.overflow = "hidden";
+    resetSpeed();
+    modalVideo.play().catch(() => {}); // autoplay puede fallar en algunos navegadores, no pasa nada
+  }
+
+  function closePlayer() {
+    playerModal.classList.remove("open");
+    document.body.style.overflow = "";
+    modalVideo.pause();
+    modalVideo.removeAttribute("src");
+    modalVideo.load();
+  }
+
+  $("#player-close").addEventListener("click", closePlayer);
+  playerModal.addEventListener("click", (e) => {
+    if (e.target === playerModal) closePlayer(); // click fuera del video cierra
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && playerModal.classList.contains("open")) closePlayer();
+  });
+
+  $("#speed-control").addEventListener("click", (e) => {
+    const btn = e.target.closest(".speed-btn");
+    if (!btn) return;
+    const speed = parseFloat(btn.dataset.speed);
+    modalVideo.playbackRate = speed;
+    document.querySelectorAll(".speed-btn").forEach(b => b.classList.toggle("active", b === btn));
+  });
+
+  function resetSpeed() {
+    modalVideo.playbackRate = 1;
+    document.querySelectorAll(".speed-btn").forEach(b => b.classList.toggle("active", b.dataset.speed === "1"));
+  }
+
+  async function deleteVideo(key) {
+    if (!confirm("¿Borrar esta cinta? No se puede deshacer.")) return;
+    await fetch(`${API_BASE}/api/video/${encodeURIComponent(key)}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+    loadVideos();
+  }
+
+  function logout() {
+    localStorage.removeItem("vv_token");
+    location.reload();
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+  function formatDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString("es", { day: "2-digit", month: "short", year: "numeric" });
+  }
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---------- INIT ----------
+  if (token) showApp();
+</script>
+</body>
+</html>
