@@ -94,6 +94,27 @@ git push -u origin main
 Abre esa URL desde el celular, escribe la contraseña, y empieza a subir
 videos. Funciona igual desde cualquier dispositivo con navegador.
 
+## 10. (Opcional) Notificaciones por correo
+
+Para recibir un email cada vez que se sube o elimina un video, usa
+[Resend](https://resend.com) (gratis, sin tarjeta, 100 emails/día):
+
+1. Crea cuenta en https://resend.com con el correo donde quieres recibir
+   las notificaciones (en el plan sin dominio verificado, solo se puede
+   enviar a ese mismo correo de registro)
+2. En el dashboard de Resend, ve a **API Keys** → **Create API Key**
+3. Copia la key (empieza con `re_...`)
+4. Ve a tu Worker en Cloudflare → **Settings** → **Variables and Secrets**
+   y agrega dos secretos:
+   - `RESEND_API_KEY` → la key que copiaste
+   - `NOTIFY_EMAIL` → el correo donde quieres recibir las notificaciones
+     (debe ser el mismo con el que te registraste en Resend)
+5. Guarda — listo, ya deberías recibir un correo en cada subida/eliminación
+
+Si en algún momento quieres notificar a *cualquier* correo (no solo el de
+registro), necesitas verificar un dominio propio en Resend y cambiar el
+`from` en `worker/src/index.js` por una dirección de ese dominio.
+
 ---
 
 ## Notas técnicas
