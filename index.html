@@ -3,7 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Vidoo — Video Vault</title>
+
+<title>Vidoo — Bóveda de videos personal</title>
+<meta name="description" content="Sube tus videos desde el celular o cualquier dispositivo sin perder calidad. Acceso privado, streaming directo y reproductor a pantalla completa.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#15140f">
+
+<!-- Favicon e íconos -->
+<link rel="icon" type="image/webp" href="vidoo.webp">
+<link rel="apple-touch-icon" href="vidoo.webp">
+
+<!-- Open Graph (WhatsApp, Facebook, etc.) -->
+<meta property="og:title" content="Vidoo — Bóveda de videos personal">
+<meta property="og:description" content="Acceso privado a tu colección de videos, sin pérdida de calidad.">
+<meta property="og:image" content="vidoo.webp">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vidoo — Bóveda de videos personal">
+<meta name="twitter:description" content="Acceso privado a tu colección de videos, sin pérdida de calidad.">
+<meta name="twitter:image" content="vidoo.webp">
+
 <style>
   :root {
     --bg: #15140f;
@@ -417,8 +438,8 @@
 
 <script>
   // ⚠️ Reemplaza esto con la URL de tu Worker después de desplegarlo.
-  const API_BASE = "https://vidoocloud.ledzenrique1896.workers.dev";
-  
+  const API_BASE = "https://video-vault-api.TU-SUBDOMINIO.workers.dev";
+
   const $ = (sel) => document.querySelector(sel);
   let token = localStorage.getItem("vv_token") || null;
 
