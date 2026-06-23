@@ -626,7 +626,7 @@
     gallery.innerHTML = videos.map(v => `
       <div class="video-card">
         <div class="thumb-wrap" data-key="${escapeHtml(v.key)}">
-          <video preload="metadata" src="${API_BASE}/api/video/${encodeURIComponent(v.key)}#t=0.1" muted></video>
+          <video preload="metadata" src="${API_BASE}/api/video/${encodeURIComponent(v.key)}?token=${encodeURIComponent(token)}#t=0.1" muted></video>
           <div class="play-badge"></div>
         </div>
         <div class="meta">
@@ -649,7 +649,7 @@
   const modalVideo = $("#modal-video");
 
   function openPlayer(key) {
-    modalVideo.src = `${API_BASE}/api/video/${encodeURIComponent(key)}`;
+    modalVideo.src = `${API_BASE}/api/video/${encodeURIComponent(key)}?token=${encodeURIComponent(token)}`;
     playerModal.classList.add("open");
     document.body.style.overflow = "hidden";
     resetSpeed();
