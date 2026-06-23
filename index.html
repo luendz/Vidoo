@@ -175,6 +175,47 @@
     letter-spacing: 0.05em;
   }
 
+  .password-wrap {
+    position: relative;
+  }
+  .password-wrap input {
+    padding-right: 48px;
+  }
+  .toggle-pw {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    color: var(--amber-dim);
+    font-size: 1.1rem;
+    padding: 10px 12px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .toggle-pw:hover { color: var(--amber); }
+  .toggle-pw.showing { color: var(--amber); }
+
+  header.top .top-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logout-btn {
+    background: none;
+    color: var(--amber-dim);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .logout-btn:hover {
+    color: var(--red);
+    border-color: var(--red);
+  }
+
   /* Drop zone */
   #dropzone {
     border: 1px dashed var(--line);
@@ -399,7 +440,10 @@
       </div>
       <h1 class="reel-font">Vidoo</h1>
       <p>Acceso privado · solo cintas autorizadas</p>
-      <input type="password" id="password-input" placeholder="Contraseña" autocomplete="current-password">
+      <div class="password-wrap">
+        <input type="password" id="password-input" placeholder="Contraseña" autocomplete="current-password">
+        <button type="button" class="toggle-pw" id="toggle-pw" aria-label="Mostrar contraseña">👁</button>
+      </div>
       <button class="btn-primary" id="login-btn">Entrar</button>
       <div id="login-error"></div>
     </div>
@@ -409,7 +453,10 @@
   <div id="app">
     <header class="top">
       <h1 class="reel-font">Vidoo</h1>
-      <span class="count" id="video-count">0 cintas</span>
+      <div class="top-right">
+        <span class="count" id="video-count">0 cintas</span>
+        <button class="logout-btn" id="logout-btn">Salir</button>
+      </div>
     </header>
 
     <div id="dropzone">
@@ -447,6 +494,15 @@
   $("#login-btn").addEventListener("click", login);
   $("#password-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") login();
+  });
+
+  $("#toggle-pw").addEventListener("click", () => {
+    const input = $("#password-input");
+    const btn = $("#toggle-pw");
+    const showing = input.type === "text";
+    input.type = showing ? "password" : "text";
+    btn.classList.toggle("showing", !showing);
+    btn.setAttribute("aria-label", showing ? "Mostrar contraseña" : "Ocultar contraseña");
   });
 
   async function login() {
@@ -642,6 +698,12 @@
     localStorage.removeItem("vv_token");
     location.reload();
   }
+
+  $("#logout-btn").addEventListener("click", () => {
+    if (confirm("¿Salir de Vidoo? Tendrás que ingresar la contraseña de nuevo.")) {
+      logout();
+    }
+  });
 
   function formatSize(bytes) {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
