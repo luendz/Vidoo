@@ -12,6 +12,7 @@
 <!-- Favicon e íconos -->
 <link rel="icon" type="image/webp" href="vidoo.webp">
 <link rel="apple-touch-icon" href="vidoo.webp">
+<link rel="manifest" href="manifest.json">
 
 <!-- Open Graph (WhatsApp, Facebook, etc.) -->
 <meta property="og:title" content="Vidoo — Bóveda de videos personal">
@@ -424,8 +425,314 @@
     margin-bottom: 8px;
   }
 
+  /* ---------- LIGHT THEME ---------- */
+  :root[data-theme="light"] {
+    --bg: #f5f1e6;
+    --bg-soft: #ffffff;
+    --paper: #2b2818;
+    --amber: #b8742e;
+    --amber-dim: #8a6a3f;
+    --red: #b8493a;
+    --line: #d8d0b8;
+  }
+
+  /* ---------- TOP CONTROLS ---------- */
+  .icon-toggle {
+    background: none;
+    color: var(--amber-dim);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  .icon-toggle:hover { color: var(--amber); border-color: var(--amber); }
+  .icon-toggle.active { color: var(--amber); border-color: var(--amber); }
+
+  /* ---------- USAGE BAR ---------- */
+  #usage-bar-wrap {
+    margin-bottom: 18px;
+    font-size: 0.7rem;
+    color: var(--amber-dim);
+  }
+  .usage-track {
+    height: 5px;
+    background: var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .usage-fill {
+    height: 100%;
+    background: var(--amber);
+  }
+
+  /* ---------- SEARCH / FILTER BAR ---------- */
+  #filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  #search-input {
+    flex: 1 1 160px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  #sort-select {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--paper);
+    font-family: inherit;
+    font-size: 0.8rem;
+    padding: 9px 10px;
+    border-radius: 4px;
+  }
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .chip {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--amber-dim);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .chip:hover { border-color: var(--amber); }
+  .chip.active { background: var(--amber); color: #1a1408; border-color: var(--amber); font-weight: 700; }
+
+  /* ---------- SELECTION MODE ---------- */
+  .video-card { position: relative; }
+  .select-check {
+    display: none;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(8,7,4,0.7);
+    border: 2px solid var(--paper);
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    color: var(--amber);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  body.selecting .select-check { display: flex; }
+  .video-card.selected .select-check { background: var(--amber); color: #1a1408; border-color: var(--amber); }
+  .video-card.selected { outline: 2px solid var(--amber); }
+
+  #selection-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-soft);
+    border-top: 1px solid var(--line);
+    padding: 12px 16px;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+  #selection-bar.open { display: flex; }
+
+  /* ---------- CARD ACTIONS ---------- */
+  .video-card .meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .meta .name {
+    flex: 1 1 100%;
+    color: var(--paper);
+    font-size: 0.85rem;
+    word-break: break-word;
+    cursor: text;
+  }
+  .meta .name input {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+  .meta .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .icon-btn {
+    background: none;
+    color: var(--amber-dim);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 4px 6px;
+  }
+  .icon-btn:hover { color: var(--amber); }
+  .icon-btn.fav-active { color: var(--amber); }
+
+  /* ---------- LIST VIEW ---------- */
+  #gallery.view-list { display: flex; flex-direction: column; gap: 8px; }
+  #gallery.view-list .video-card { display: flex; flex-direction: row; }
+  #gallery.view-list .thumb-wrap { width: 120px; flex-shrink: 0; }
+  #gallery.view-list .thumb-wrap video, #gallery.view-list .thumb-wrap img { max-height: 80px; }
+  #gallery.view-list .meta { flex-direction: column; align-items: flex-start; }
+
+  /* ---------- THUMBNAILS REALES ---------- */
+  .video-card .thumb-wrap img {
+    width: 100%;
+    display: block;
+    max-height: 60vh;
+    object-fit: cover;
+  }
+
+  /* ---------- SKELETON LOADING ---------- */
+  .skeleton-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .skeleton-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(217,142,63,0.08), transparent);
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  /* ---------- ERROR BANNER ---------- */
+  .error-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(184,73,58,0.12);
+    border: 1px solid var(--red);
+    color: var(--paper);
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+  }
+  .error-banner button {
+    background: none;
+    color: var(--red);
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .error-banner button:hover { background: var(--red); color: var(--paper); }
+
+  /* ---------- RESUME UPLOAD BANNER ---------- */
+  .resume-banner {
+    display: none;
+    background: rgba(217,142,63,0.08);
+    border: 1px solid var(--amber-dim);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 0.8rem;
+  }
+  .resume-banner.open { display: block; }
+  .resume-banner .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; }
+
+  /* ---------- CONFIRM MODAL ---------- */
+  .confirm-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,7,4,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .confirm-modal.open { display: flex; }
+  .confirm-box {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 22px;
+    max-width: 360px;
+    width: 100%;
+  }
+  .confirm-box p { margin: 0 0 18px; font-size: 0.9rem; }
+  .confirm-actions { display: flex; gap: 10px; }
+  .confirm-actions button { flex: 1; }
+
+  /* ---------- SHARE MODAL ---------- */
+  .share-box select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--paper);
+    font-family: inherit;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0 16px;
+  }
+  .share-link-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .share-link-row input {
+    flex: 1;
+    font-size: 0.78rem;
+  }
+
+  /* ---------- TOASTS ---------- */
+  #toast-container {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 300;
+    width: calc(100% - 32px);
+    max-width: 360px;
+  }
+  .toast {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--paper);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: toastIn 0.2s ease-out;
+  }
+  .toast-success { border-color: #6a9c5e; }
+  .toast-error { border-color: var(--red); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---------- CARD ENTRANCE ANIMATION ---------- */
+  .video-card { animation: cardIn 0.3s ease-out backwards; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
   @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
+    * { transition: none !important; animation: none !important; }
   }
 </style>
 </head>
@@ -455,9 +762,24 @@
       <h1 class="reel-font">Vidoo</h1>
       <div class="top-right">
         <span class="count" id="video-count">0 cintas</span>
+        <button class="icon-toggle" id="select-mode-btn" title="Seleccionar">☑</button>
+        <button class="icon-toggle" id="view-toggle-btn" title="Vista lista/grid">☰</button>
+        <button class="icon-toggle" id="theme-toggle-btn" title="Tema claro/oscuro">☀</button>
         <button class="logout-btn" id="logout-btn">Salir</button>
       </div>
     </header>
+
+    <div id="usage-bar-wrap">
+      <span id="usage-text">Calculando espacio usado…</span>
+      <div class="usage-track"><div class="usage-fill" id="usage-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="error-banner" id="error-banner">
+      <span id="error-banner-text"></span>
+      <button id="error-banner-retry">Reintentar</button>
+    </div>
+
+    <div class="resume-banner" id="resume-banner"></div>
 
     <div id="dropzone">
       <p>Arrastra un video aquí, o súbelo desde tu celular</p>
@@ -466,7 +788,27 @@
     </div>
 
     <div id="uploads"></div>
+
+    <div id="filter-bar">
+      <input type="text" id="search-input" placeholder="Buscar por nombre…">
+      <select id="sort-select">
+        <option value="date">Más recientes</option>
+        <option value="name">Nombre A-Z</option>
+        <option value="size">Tamaño</option>
+      </select>
+    </div>
+    <div class="chip-row" id="chip-row"></div>
+
+    <div id="gallery-skeleton"></div>
     <div id="gallery"></div>
+  </div>
+
+  <div id="selection-bar">
+    <span id="selection-count">0 seleccionados</span>
+    <div>
+      <button class="btn-secondary" id="selection-cancel">Cancelar</button>
+      <button class="logout-btn" id="selection-delete" style="border-color:var(--red); color:var(--red);">Borrar</button>
+    </div>
   </div>
 
   <!-- MODAL PLAYER -->
@@ -483,12 +825,99 @@
     </div>
   </div>
 
+  <!-- CONFIRM MODAL -->
+  <div class="confirm-modal" id="confirm-modal">
+    <div class="confirm-box">
+      <p id="confirm-message"></p>
+      <div class="confirm-actions">
+        <button class="btn-secondary" id="confirm-cancel">Cancelar</button>
+        <button class="btn-primary" id="confirm-ok">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE MODAL -->
+  <div class="confirm-modal" id="share-modal">
+    <div class="confirm-box share-box">
+      <p>Compartir cinta</p>
+      <select id="share-ttl">
+        <option value="1">Vence en 1 hora</option>
+        <option value="24" selected>Vence en 24 horas</option>
+        <option value="168">Vence en 7 días</option>
+      </select>
+      <div class="share-link-row">
+        <input type="text" id="share-link-output" readonly placeholder="Generando link…">
+        <button class="btn-secondary" id="share-copy-btn">Copiar</button>
+      </div>
+      <div class="confirm-actions">
+        <button class="btn-secondary" id="share-close-btn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
 <script>
   // ⚠️ Reemplaza esto con la URL de tu Worker después de desplegarlo.
   const API_BASE = "https://vidoocloud.ledzenrique1896.workers.dev";
 
   const $ = (sel) => document.querySelector(sel);
-  let token = localStorage.getItem("vv_token") || null;
+  let fullToken = localStorage.getItem("vv_token") || null;
+  let viewToken = localStorage.getItem("vv_view_token") || null;
+  let allVideos = [];
+  let usage = null;
+  let selecting = false;
+  let selectedKeys = new Set();
+  const filters = { search: "", folder: "", favoritesOnly: false, recentOnly: false, sortBy: "date" };
+
+  // ---------- TEMA / VISTA ----------
+  applyTheme(localStorage.getItem("vv_theme") || "dark");
+  applyViewMode(localStorage.getItem("vv_view_mode") || "grid");
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("vv_theme", theme);
+    $("#theme-toggle-btn").textContent = theme === "light" ? "☾" : "☀";
+  }
+  $("#theme-toggle-btn").addEventListener("click", () => {
+    applyTheme(document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light");
+  });
+
+  function applyViewMode(mode) {
+    $("#gallery").classList.toggle("view-list", mode === "list");
+    localStorage.setItem("vv_view_mode", mode);
+  }
+  $("#view-toggle-btn").addEventListener("click", () => {
+    applyViewMode($("#gallery").classList.contains("view-list") ? "grid" : "list");
+  });
+
+  // ---------- TOASTS / CONFIRM / ERRORES ----------
+  function showToast(message, type = "info") {
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    $("#toast-container").appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function showConfirm(message) {
+    return new Promise((resolve) => {
+      $("#confirm-message").textContent = message;
+      $("#confirm-modal").classList.add("open");
+      const cleanup = (result) => { $("#confirm-modal").classList.remove("open"); resolve(result); };
+      $("#confirm-ok").onclick = () => cleanup(true);
+      $("#confirm-cancel").onclick = () => cleanup(false);
+    });
+  }
+
+  let lastFailedAction = null;
+  function showError(message, retryFn) {
+    $("#error-banner-text").textContent = message;
+    $("#error-banner").style.display = "flex";
+    lastFailedAction = retryFn;
+  }
+  function clearError() { $("#error-banner").style.display = "none"; }
+  $("#error-banner-retry").addEventListener("click", () => { clearError(); lastFailedAction?.(); });
 
   // ---------- LOGIN ----------
   $("#login-btn").addEventListener("click", login);
@@ -518,8 +947,10 @@
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al entrar");
-      token = data.token;
-      localStorage.setItem("vv_token", token);
+      fullToken = data.token;
+      viewToken = data.viewToken;
+      localStorage.setItem("vv_token", fullToken);
+      localStorage.setItem("vv_view_token", viewToken);
       showApp();
     } catch (err) {
       $("#login-error").textContent = err.message;
@@ -531,12 +962,39 @@
   function showApp() {
     $("#login-screen").style.display = "none";
     $("#app").style.display = "block";
+    maybeRefreshSession();
     loadVideos();
+    checkResumableUploads();
+  }
+
+  function getTokenExp(t) {
+    if (!t) return 0;
+    const exp = Number(t.split(".")[0]);
+    return Number.isFinite(exp) ? exp : 0;
+  }
+
+  async function maybeRefreshSession() {
+    const FIVE_DAYS = 1000 * 60 * 60 * 24 * 5;
+    if (getTokenExp(fullToken) - Date.now() > FIVE_DAYS) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/refresh`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${fullToken}` },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      fullToken = data.token;
+      viewToken = data.viewToken;
+      localStorage.setItem("vv_token", fullToken);
+      localStorage.setItem("vv_view_token", viewToken);
+    } catch {}
   }
 
   // ---------- UPLOAD ----------
   const dropzone = $("#dropzone");
   const fileInput = $("#file-input");
+  const RESUMABLE_THRESHOLD = 20 * 1024 * 1024;
+  const CHUNK_SIZE = 8 * 1024 * 1024;
 
   $("#pick-btn").addEventListener("click", () => fileInput.click());
   fileInput.addEventListener("change", (e) => handleFiles(e.target.files));
@@ -556,65 +1014,246 @@
   }
 
   function uploadFile(file) {
-    const id = "u" + Date.now() + Math.random().toString(36).slice(2);
+    return file.size > RESUMABLE_THRESHOLD ? uploadFileResumable(file) : uploadFileSimple(file);
+  }
+
+  function createUploadItem(filename) {
     const item = document.createElement("div");
     item.className = "upload-item";
-    item.id = id;
     item.innerHTML = `
-      <div class="fname"><span>${escapeHtml(file.name)}</span><span class="pct">0%</span></div>
+      <div class="fname"><span>${escapeHtml(filename)}</span><span class="pct">0%</span></div>
       <div class="progress-track"><div class="progress-fill"></div></div>
     `;
     $("#uploads").prepend(item);
+    return item;
+  }
+  function updateUploadItem(item, pct) {
+    item.querySelector(".pct").textContent = `${pct}%`;
+    item.querySelector(".progress-fill").style.width = `${pct}%`;
+  }
+  function finishUploadItem(item, success, label = "Listo") {
+    item.classList.add(success ? "done" : "error");
+    item.querySelector(".pct").textContent = label;
+    if (success) setTimeout(() => item.remove(), 1200);
+  }
 
+  function uploadFileSimple(file) {
+    const item = createUploadItem(file.name);
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${API_BASE}/api/upload`);
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Authorization", `Bearer ${fullToken}`);
     xhr.setRequestHeader("X-Filename", file.name);
     xhr.setRequestHeader("Content-Type", file.type || "video/mp4");
 
-    xhr.upload.onprogress = (e) => {
-      const pct = Math.round((e.loaded / e.total) * 100);
-      item.querySelector(".pct").textContent = `${pct}%`;
-      item.querySelector(".progress-fill").style.width = `${pct}%`;
-    };
+    xhr.upload.onprogress = (e) => updateUploadItem(item, Math.round((e.loaded / e.total) * 100));
 
-    xhr.onload = () => {
+    xhr.onload = async () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        item.classList.add("done");
-        item.querySelector(".pct").textContent = "Listo";
-        setTimeout(() => { item.remove(); loadVideos(); }, 1200);
+        const { key } = JSON.parse(xhr.responseText);
+        await tryUploadThumbnail(file, key);
+        finishUploadItem(item, true);
+        showToast("Video subido", "success");
+        loadVideos();
       } else {
-        item.classList.add("error");
-        item.querySelector(".pct").textContent = "Error";
+        finishUploadItem(item, false, "Error");
       }
     };
-    xhr.onerror = () => {
-      item.classList.add("error");
-      item.querySelector(".pct").textContent = "Error de red";
-    };
+    xhr.onerror = () => finishUploadItem(item, false, "Error de red");
 
     xhr.send(file);
   }
 
-  // ---------- GALLERY ----------
-  async function loadVideos() {
+  async function uploadFileResumable(file) {
+    const progressKey = `vv_upload_${file.name}_${file.size}_${file.lastModified}`;
+    const item = createUploadItem(file.name);
+    let state = JSON.parse(localStorage.getItem(progressKey) || "null");
+
     try {
-      const res = await fetch(`${API_BASE}/api/videos`, {
-        headers: { "Authorization": `Bearer ${token}` },
+      if (!state) {
+        const res = await fetch(`${API_BASE}/api/upload/start`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: file.name, contentType: file.type || "video/mp4" }),
+        });
+        const { key, uploadId } = await res.json();
+        state = { key, uploadId, completedParts: [] };
+        localStorage.setItem(progressKey, JSON.stringify(state));
+      }
+
+      const totalParts = Math.ceil(file.size / CHUNK_SIZE);
+      const completedNumbers = new Set(state.completedParts.map(p => p.partNumber));
+
+      for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+        if (completedNumbers.has(partNumber)) continue;
+        const start = (partNumber - 1) * CHUNK_SIZE;
+        const blob = file.slice(start, Math.min(start + CHUNK_SIZE, file.size));
+
+        const partRes = await fetch(
+          `${API_BASE}/api/upload/part?key=${encodeURIComponent(state.key)}&uploadId=${encodeURIComponent(state.uploadId)}&partNumber=${partNumber}`,
+          { method: "POST", headers: { Authorization: `Bearer ${fullToken}` }, body: blob }
+        );
+        if (!partRes.ok) throw new Error("upload-part-failed");
+        const { etag } = await partRes.json();
+        state.completedParts.push({ partNumber, etag });
+        localStorage.setItem(progressKey, JSON.stringify(state));
+        updateUploadItem(item, Math.round((partNumber / totalParts) * 100));
+      }
+
+      await fetch(`${API_BASE}/api/upload/complete`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ key: state.key, uploadId: state.uploadId, parts: state.completedParts }),
       });
-      if (res.status === 401) return logout();
-      const { videos } = await res.json();
-      renderGallery(videos);
+      localStorage.removeItem(progressKey);
+
+      await tryUploadThumbnail(file, state.key);
+      finishUploadItem(item, true);
+      showToast("Video subido", "success");
+      loadVideos();
     } catch (err) {
+      finishUploadItem(item, false, "Pausado, reintentá subiendo el mismo archivo");
       console.error(err);
     }
   }
 
+  async function tryUploadThumbnail(file, key) {
+    try {
+      const blob = await captureThumbnail(file);
+      await fetch(`${API_BASE}/api/upload-thumb/${encodeURIComponent(key)}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "image/jpeg" },
+        body: blob,
+      });
+    } catch (err) {
+      console.error("Miniatura no generada:", err);
+    }
+  }
+
+  function captureThumbnail(file) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.muted = true;
+      video.src = URL.createObjectURL(file);
+      video.addEventListener("loadeddata", () => {
+        video.currentTime = Math.min(0.5, (video.duration || 1) / 10);
+      });
+      video.addEventListener("seeked", () => {
+        const canvas = document.createElement("canvas");
+        const maxW = 480;
+        const scale = Math.min(1, maxW / (video.videoWidth || maxW));
+        canvas.width = (video.videoWidth || maxW) * scale;
+        canvas.height = (video.videoHeight || maxW) * scale;
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(video.src);
+          blob ? resolve(blob) : reject(new Error("No se pudo generar miniatura"));
+        }, "image/jpeg", 0.8);
+      });
+      video.addEventListener("error", () => reject(new Error("No se pudo leer el video")));
+    });
+  }
+
+  function checkResumableUploads() {
+    const pending = Object.keys(localStorage).filter(k => k.startsWith("vv_upload_"));
+    const banner = $("#resume-banner");
+    if (!pending.length) { banner.classList.remove("open"); return; }
+    banner.innerHTML = `Tenés ${pending.length} subida(s) sin terminar. Elegí el mismo archivo de nuevo para continuar.
+      <div class="row"><span></span><button class="btn-secondary" id="resume-dismiss">Descartar</button></div>`;
+    banner.classList.add("open");
+    $("#resume-dismiss").addEventListener("click", () => {
+      pending.forEach(k => localStorage.removeItem(k));
+      banner.classList.remove("open");
+    });
+  }
+
+  // ---------- GALLERY ----------
+  async function loadVideos() {
+    $("#gallery-skeleton").innerHTML = Array(3).fill('<div class="skeleton-card"></div>').join("");
+    try {
+      const res = await fetch(`${API_BASE}/api/videos`, {
+        headers: { Authorization: `Bearer ${fullToken}` },
+      });
+      if (res.status === 401) return logout();
+      if (!res.ok) throw new Error("bad-response");
+      const data = await res.json();
+      allVideos = data.videos;
+      usage = data.usage;
+      clearError();
+      renderUsage();
+      renderChips();
+      applyFiltersAndRender();
+    } catch (err) {
+      console.error(err);
+      showError("No se pudo cargar la galería", loadVideos);
+    } finally {
+      $("#gallery-skeleton").innerHTML = "";
+    }
+  }
+
+  function renderUsage() {
+    if (!usage) return;
+    const usedGb = (usage.usedBytes / (1024 ** 3)).toFixed(1);
+    const quotaGb = (usage.quotaBytes / (1024 ** 3)).toFixed(0);
+    $("#usage-text").textContent = `${usedGb} GB de ${quotaGb} GB usados`;
+    $("#usage-fill").style.width = `${usage.percent}%`;
+  }
+
+  function renderChips() {
+    const folders = [...new Set(allVideos.map(v => v.folder).filter(Boolean))];
+    const chips = [
+      { label: "Todos", active: !filters.folder && !filters.favoritesOnly && !filters.recentOnly,
+        onClick: () => { filters.folder = ""; filters.favoritesOnly = false; filters.recentOnly = false; } },
+      { label: "★ Favoritos", active: filters.favoritesOnly,
+        onClick: () => { filters.favoritesOnly = !filters.favoritesOnly; filters.recentOnly = false; } },
+      { label: "Recientes", active: filters.recentOnly,
+        onClick: () => { filters.recentOnly = !filters.recentOnly; filters.favoritesOnly = false; } },
+      ...folders.map(f => ({ label: f, active: filters.folder === f,
+        onClick: () => { filters.folder = filters.folder === f ? "" : f; filters.favoritesOnly = false; filters.recentOnly = false; } })),
+    ];
+    $("#chip-row").innerHTML = chips.map((c, i) => `<button class="chip ${c.active ? "active" : ""}" data-i="${i}">${escapeHtml(c.label)}</button>`).join("");
+    $("#chip-row").querySelectorAll(".chip").forEach((btn, i) => {
+      btn.addEventListener("click", () => { chips[i].onClick(); renderChips(); applyFiltersAndRender(); });
+    });
+  }
+
+  $("#search-input").addEventListener("input", (e) => { filters.search = e.target.value; applyFiltersAndRender(); });
+  $("#sort-select").addEventListener("change", (e) => { filters.sortBy = e.target.value; applyFiltersAndRender(); });
+
+  function getRecentKeys() {
+    return JSON.parse(localStorage.getItem("vv_recent") || "[]");
+  }
+  function trackRecent(key) {
+    const recent = getRecentKeys().filter(k => k !== key);
+    recent.unshift(key);
+    localStorage.setItem("vv_recent", JSON.stringify(recent.slice(0, 20)));
+  }
+
+  function applyFiltersAndRender() {
+    const recentKeys = getRecentKeys();
+    let filtered = allVideos.filter(v =>
+      (!filters.search || v.displayName.toLowerCase().includes(filters.search.toLowerCase())) &&
+      (!filters.folder || v.folder === filters.folder) &&
+      (!filters.favoritesOnly || v.favorite) &&
+      (!filters.recentOnly || recentKeys.includes(v.key))
+    );
+    if (filters.recentOnly) {
+      filtered.sort((a, b) => recentKeys.indexOf(a.key) - recentKeys.indexOf(b.key));
+    } else if (filters.sortBy === "name") {
+      filtered.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    } else if (filters.sortBy === "size") {
+      filtered.sort((a, b) => b.size - a.size);
+    } else {
+      filtered.sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded));
+    }
+    renderGallery(filtered);
+  }
+
   function renderGallery(videos) {
     const gallery = $("#gallery");
-    $("#video-count").textContent = `${videos.length} ${videos.length === 1 ? "cinta" : "cintas"}`;
+    $("#video-count").textContent = `${allVideos.length} ${allVideos.length === 1 ? "cinta" : "cintas"}`;
 
-    if (videos.length === 0) {
+    if (allVideos.length === 0) {
       gallery.innerHTML = `
         <div class="empty-state">
           <span class="reel-font">Vacío por ahora</span>
@@ -622,26 +1261,200 @@
         </div>`;
       return;
     }
+    if (videos.length === 0) {
+      gallery.innerHTML = `<div class="empty-state">Nada coincide con el filtro actual.</div>`;
+      return;
+    }
 
-    gallery.innerHTML = videos.map(v => `
-      <div class="video-card">
+    gallery.innerHTML = videos.map(v => {
+      const thumbKey = v.hasThumbnail ? `${v.key}.thumb.jpg` : v.key;
+      const thumbSrc = `${API_BASE}/api/video/${encodeURIComponent(thumbKey)}?token=${encodeURIComponent(viewToken)}`;
+      const media = v.hasThumbnail
+        ? `<img src="${thumbSrc}" alt="">`
+        : `<video preload="metadata" src="${thumbSrc}#t=0.1" muted></video>`;
+      return `
+      <div class="video-card ${selectedKeys.has(v.key) ? "selected" : ""}" data-key="${escapeHtml(v.key)}">
+        <div class="select-check">${selectedKeys.has(v.key) ? "✓" : ""}</div>
         <div class="thumb-wrap" data-key="${escapeHtml(v.key)}">
-          <video preload="metadata" src="${API_BASE}/api/video/${encodeURIComponent(v.key)}?token=${encodeURIComponent(token)}#t=0.1" muted></video>
+          ${media}
           <div class="play-badge"></div>
         </div>
         <div class="meta">
-          <span>${formatSize(v.size)} · ${formatDate(v.uploaded)}</span>
-          <button class="del" data-key="${escapeHtml(v.key)}">Borrar</button>
+          <span class="name" data-key="${escapeHtml(v.key)}">${escapeHtml(v.displayName)}</span>
+          <span>${formatSize(v.size)} · ${formatDate(v.uploaded)}${v.folder ? " · " + escapeHtml(v.folder) : ""}</span>
+          <div class="actions">
+            <button class="icon-btn fav-btn ${v.favorite ? "fav-active" : ""}" data-key="${escapeHtml(v.key)}">${v.favorite ? "★" : "☆"}</button>
+            <button class="icon-btn rename-btn" data-key="${escapeHtml(v.key)}">Renombrar</button>
+            <button class="icon-btn folder-btn" data-key="${escapeHtml(v.key)}">Carpeta</button>
+            <button class="icon-btn share-btn" data-key="${escapeHtml(v.key)}">Compartir</button>
+            <button class="icon-btn download-btn" data-key="${escapeHtml(v.key)}">Descargar</button>
+            <button class="icon-btn del" data-key="${escapeHtml(v.key)}" style="color:var(--red)">Borrar</button>
+          </div>
         </div>
       </div>
-    `).join("");
+    `;
+    }).join("");
 
     gallery.querySelectorAll(".thumb-wrap").forEach(el => {
-      el.addEventListener("click", () => openPlayer(el.dataset.key));
+      el.addEventListener("click", () => selecting ? toggleSelect(el.dataset.key) : openPlayer(el.dataset.key));
+    });
+    gallery.querySelectorAll(".select-check").forEach(el => {
+      el.addEventListener("click", () => toggleSelect(el.closest(".video-card").dataset.key));
     });
     gallery.querySelectorAll(".del").forEach(btn => {
       btn.addEventListener("click", (e) => { e.stopPropagation(); deleteVideo(btn.dataset.key); });
     });
+    gallery.querySelectorAll(".fav-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); toggleFavorite(btn.dataset.key); });
+    });
+    gallery.querySelectorAll(".rename-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); startRename(btn.dataset.key); });
+    });
+    gallery.querySelectorAll(".folder-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); startFolderEdit(btn.dataset.key); });
+    });
+    gallery.querySelectorAll(".share-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); openShareModal(btn.dataset.key); });
+    });
+    gallery.querySelectorAll(".download-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => { e.stopPropagation(); downloadVideo(btn.dataset.key); });
+    });
+  }
+
+  // ---------- SELECCIÓN MÚLTIPLE ----------
+  $("#select-mode-btn").addEventListener("click", () => {
+    selecting = !selecting;
+    document.body.classList.toggle("selecting", selecting);
+    $("#select-mode-btn").classList.toggle("active", selecting);
+    if (!selecting) { selectedKeys.clear(); updateSelectionBar(); applyFiltersAndRender(); }
+  });
+  $("#selection-cancel").addEventListener("click", () => {
+    selecting = false;
+    selectedKeys.clear();
+    document.body.classList.remove("selecting");
+    $("#select-mode-btn").classList.remove("active");
+    updateSelectionBar();
+    applyFiltersAndRender();
+  });
+  $("#selection-delete").addEventListener("click", async () => {
+    if (!(await showConfirm(`¿Borrar ${selectedKeys.size} cinta(s)? No se puede deshacer.`))) return;
+    await batchDelete([...selectedKeys]);
+    selectedKeys.clear();
+    updateSelectionBar();
+    showToast("Cintas eliminadas", "success");
+    loadVideos();
+  });
+
+  function toggleSelect(key) {
+    selectedKeys.has(key) ? selectedKeys.delete(key) : selectedKeys.add(key);
+    updateSelectionBar();
+    applyFiltersAndRender();
+  }
+  function updateSelectionBar() {
+    $("#selection-count").textContent = `${selectedKeys.size} seleccionados`;
+    $("#selection-bar").classList.toggle("open", selectedKeys.size > 0);
+  }
+
+  async function batchDelete(keys) {
+    const BATCH = 20;
+    for (let i = 0; i < keys.length; i += BATCH) {
+      await fetch(`${API_BASE}/api/videos/delete`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ keys: keys.slice(i, i + BATCH) }),
+      });
+    }
+  }
+
+  // ---------- RENOMBRAR / CARPETA / FAVORITO ----------
+  function startRename(key) {
+    const span = document.querySelector(`.name[data-key="${key}"]`);
+    const current = span.textContent;
+    span.innerHTML = `<input type="text" value="${escapeHtml(current)}">`;
+    const input = span.querySelector("input");
+    input.focus();
+    input.select();
+    const commit = async () => {
+      const value = input.value.trim() || current;
+      await fetch(`${API_BASE}/api/video/${encodeURIComponent(key)}/rename`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: value }),
+      });
+      showToast("Nombre actualizado", "success");
+      loadVideos();
+    };
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") commit(); });
+    input.addEventListener("blur", commit);
+  }
+
+  function startFolderEdit(key) {
+    const video = allVideos.find(v => v.key === key);
+    const folders = [...new Set(allVideos.map(v => v.folder).filter(Boolean))];
+    const btn = document.querySelector(`.folder-btn[data-key="${key}"]`);
+    const wrap = document.createElement("span");
+    wrap.innerHTML = `<input type="text" list="folder-options" value="${escapeHtml(video?.folder || "")}" placeholder="Sin carpeta" style="width:120px;">`;
+    btn.replaceWith(wrap);
+    let datalist = document.getElementById("folder-options");
+    if (!datalist) {
+      datalist = document.createElement("datalist");
+      datalist.id = "folder-options";
+      document.body.appendChild(datalist);
+    }
+    datalist.innerHTML = folders.map(f => `<option value="${escapeHtml(f)}">`).join("");
+    const input = wrap.querySelector("input");
+    input.focus();
+    const commit = async () => {
+      await fetch(`${API_BASE}/api/video/${encodeURIComponent(key)}/folder`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ folder: input.value.trim() }),
+      });
+      showToast("Carpeta actualizada", "success");
+      loadVideos();
+    };
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") commit(); });
+    input.addEventListener("blur", commit);
+  }
+
+  async function toggleFavorite(key) {
+    const video = allVideos.find(v => v.key === key);
+    await fetch(`${API_BASE}/api/video/${encodeURIComponent(key)}/favorite`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ favorite: !video.favorite }),
+    });
+    loadVideos();
+  }
+
+  // ---------- COMPARTIR ----------
+  let shareKey = null;
+  function openShareModal(key) {
+    shareKey = key;
+    $("#share-link-output").value = "";
+    $("#share-modal").classList.add("open");
+    generateShareLink();
+  }
+  $("#share-ttl").addEventListener("change", generateShareLink);
+  async function generateShareLink() {
+    if (!shareKey) return;
+    const res = await fetch(`${API_BASE}/api/share`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${fullToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ key: shareKey, ttlHours: Number($("#share-ttl").value) }),
+    });
+    const data = await res.json();
+    $("#share-link-output").value = `${API_BASE}/api/video/${encodeURIComponent(shareKey)}?token=${encodeURIComponent(data.shareToken)}`;
+  }
+  $("#share-copy-btn").addEventListener("click", async () => {
+    await navigator.clipboard.writeText($("#share-link-output").value);
+    showToast("Link copiado", "success");
+  });
+  $("#share-close-btn").addEventListener("click", () => { $("#share-modal").classList.remove("open"); shareKey = null; });
+
+  // ---------- DESCARGA ----------
+  function downloadVideo(key) {
+    window.location.href = `${API_BASE}/api/video/${encodeURIComponent(key)}?token=${encodeURIComponent(viewToken)}&download=1`;
   }
 
   // ---------- MODAL PLAYER ----------
@@ -649,10 +1462,11 @@
   const modalVideo = $("#modal-video");
 
   function openPlayer(key) {
-    modalVideo.src = `${API_BASE}/api/video/${encodeURIComponent(key)}?token=${encodeURIComponent(token)}`;
+    modalVideo.src = `${API_BASE}/api/video/${encodeURIComponent(key)}?token=${encodeURIComponent(viewToken)}`;
     playerModal.classList.add("open");
     document.body.style.overflow = "hidden";
     resetSpeed();
+    trackRecent(key);
     modalVideo.play().catch(() => {}); // autoplay puede fallar en algunos navegadores, no pasa nada
   }
 
@@ -669,7 +1483,11 @@
     if (e.target === playerModal) closePlayer(); // click fuera del video cierra
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && playerModal.classList.contains("open")) closePlayer();
+    if (!playerModal.classList.contains("open")) return;
+    if (e.key === "Escape") return closePlayer();
+    if (e.key === "ArrowRight") modalVideo.currentTime += 10;
+    if (e.key === "ArrowLeft") modalVideo.currentTime -= 10;
+    if (e.key === " ") { e.preventDefault(); modalVideo.paused ? modalVideo.play() : modalVideo.pause(); }
   });
 
   $("#speed-control").addEventListener("click", (e) => {
@@ -686,21 +1504,23 @@
   }
 
   async function deleteVideo(key) {
-    if (!confirm("¿Borrar esta cinta? No se puede deshacer.")) return;
+    if (!(await showConfirm("¿Borrar esta cinta? No se puede deshacer."))) return;
     await fetch(`${API_BASE}/api/video/${encodeURIComponent(key)}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${fullToken}` },
     });
+    showToast("Video eliminado", "success");
     loadVideos();
   }
 
   function logout() {
     localStorage.removeItem("vv_token");
+    localStorage.removeItem("vv_view_token");
     location.reload();
   }
 
-  $("#logout-btn").addEventListener("click", () => {
-    if (confirm("¿Salir de Vidoo? Tendrás que ingresar la contraseña de nuevo.")) {
+  $("#logout-btn").addEventListener("click", async () => {
+    if (await showConfirm("¿Salir de Vidoo? Tendrás que ingresar la contraseña de nuevo.")) {
       logout();
     }
   });
@@ -719,8 +1539,13 @@
     return div.innerHTML;
   }
 
+  // ---------- PWA ----------
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js").catch(console.error);
+  }
+
   // ---------- INIT ----------
-  if (token) showApp();
+  if (fullToken) showApp();
 </script>
 </body>
 </html>

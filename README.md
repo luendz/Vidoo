@@ -44,6 +44,16 @@ wrangler secret put AUTH_SECRET
 # escribe cualquier string largo y random, ej: "x7f9k2m1p8q3w5e7r2t4y6u8"
 ```
 
+Vidoo también limita los intentos de login fallidos por IP usando Workers KV. Antes
+de desplegar, creá el namespace:
+
+```bash
+wrangler kv namespace create rate-limit-kv
+```
+
+Ese comando devuelve un `id`. Abrí `wrangler.toml` y pegalo en el bloque
+`[[kv_namespaces]]`, reemplazando `PENDIENTE_pegar_id_real_de_wrangler_kv_namespace_create`.
+
 ## 5. Desplegar el Worker
 
 ```bash

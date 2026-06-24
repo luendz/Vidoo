@@ -1,0 +1,12 @@
+{
+  "name": "Vidoo — Bóveda de videos personal",
+  "short_name": "Vidoo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#15140f",
+  "theme_color": "#15140f",
+  "icons": [
+    { "src": "vidoo.webp", "sizes": "192x192", "type": "image/webp" },
+    { "src": "vidoo.webp", "sizes": "512x512", "type": "image/webp" }
+  ]
+}

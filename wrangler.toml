@@ -9,6 +9,13 @@ compatibility_date = "2025-01-01"
 binding = "VIDEO_BUCKET"
 bucket_name = "video-cloud"
 
+# Rate limiting de /api/login. Antes de desplegar, crear el namespace con:
+#   wrangler kv namespace create rate-limit-kv
+# y pegar el "id" que devuelve ese comando acá abajo.
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "b60a82f5bd3d44ea8b766dd7dc4a05d1"
+
 # Los secretos (SITE_PASSWORD y AUTH_SECRET) NO van aquí.
 # Se configuran con:
 #   wrangler secret put SITE_PASSWORD
